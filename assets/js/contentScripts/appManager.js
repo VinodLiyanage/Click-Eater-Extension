@@ -1,6 +1,6 @@
 /***********************************************************************
   
-  https://github.com/VinodLiyanage/click-eater-chrome-extension
+  https://github.com/VinodLiyanage/Click-Eater-Extension
   -------------------------------- (C) ---------------------------------
                            Author: Vinod Liyanage
                          <vinodsliyanage@gmail.com>
@@ -415,6 +415,14 @@ class MainUi {
   }
   create() {
     const htmlText = `<div id="mainui-container-wrapper-${this.id}" class="mainui-container-wrapper container container-fluid border rounded">
+    <div class="xpath-container mb-3">
+      <div class="row mb-3">
+        <label for="inputXpath-${this.id}" class="col-sm-2 col-form-label">Xpath</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" id="inputXpath-${this.id}" value="" placeholder="xPath">
+        </div>
+      </div>
+    </div>
     <div class="timer-container mb-3">
       <label>Timer</label>
       <div class="row g-3">
@@ -495,9 +503,19 @@ class MainUi {
     const timerMiliseconds = document.getElementById(`miliseconds-${this.id}`);
     const timerReset = document.getElementById(`timer-reset-${this.id}`);
 
+    const inputXpath = document.getElementById(`inputXpath-${this.id}`);
     const inputDelay = document.getElementById(`inputDelay-${this.id}`);
     const inputCount = document.getElementById(`inputCount-${this.id}`);
 
+    const getElementFromXpath = (xpath) => {
+      return document.evaluate(
+        xpath,
+        document,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null
+      ).singleNodeValue;
+    };
     const handleSave = (e) => {
       e.preventDefault();
 
@@ -505,6 +523,7 @@ class MainUi {
       timerMinutes.setAttribute("value", timerMinutes.value);
       timerSeconds.setAttribute("value", timerSeconds.value);
       timerMiliseconds.setAttribute("value", timerMiliseconds.value);
+      inputXpath.setAttribute("value", inputXpath.value);
       inputDelay.setAttribute("value", inputDelay.value);
       inputCount.setAttribute("value", inputCount.value);
 
@@ -529,7 +548,13 @@ class MainUi {
         ? Math.abs(parseFloat(inputCount.value))
         : null;
 
-      this.clicker.init(this.element, timer, delay, count);
+      let element;
+      if (inputXpath.value && inputXpath.value.length) {
+        element = getElementFromXpath(inputXpath.value);
+      } else {
+        element = this.element;
+      }
+      this.clicker.init(element, timer, delay, count);
     };
 
     const handleSaveStart = (e) => {
