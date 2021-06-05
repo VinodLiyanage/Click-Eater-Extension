@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./bootstrap.min.css" />
+    
+  </head>
+  <body>
+   <div>
+     <div id="count" class="font">0</div>
+     <div>
+       <a
+         id="hello"
+        
+         class="btn btn-lg btn-warning m-3"
+         id="btn"
+         href="#"
+         onclick="javascript:void(console.log('hello clicked'))"
+         >hello
+       </a>
+       <button
+         id="world"
+          disabled
+         class="btn btn-lg btn-primary m-3"
+         onclick="javascript:void(console.log('world clicked btn'))"
+       >
+         world
+       </button>
+       <button
+         id="reset"
+         class="btn btn-lg btn-danger m-3"
+         onclick="javascript:void(console.log('reset clicked btn'))"
+       >
+         Reset
+       </button>
+       <ul>
+         <li>/html/body/div[2]/a</li>
+         <li>/html/body/div[2]/button[1]</li>
+       </ul>
+       <script>
+         const count = document.getElementById("count");
+         const hello = document.getElementById("hello");
+         const world = document.getElementById("world");
+         const reset = document.getElementById("reset");
+         let counter = 0;
+         hello.addEventListener("click", () => {
+           count.innerText = "";
+           counter++;
+           hello.classList.toggle("bg-success");
+           count.innerText = counter.toString();
+         });
+         world.addEventListener("click", () => {
+           count.innerText = "";
+           counter++;
+           world.classList.toggle("bg-success");
+           count.innerText = counter.toString();
+         });
+         reset.addEventListener("click", () => {
+           counter = 0;
+           count.innerText = "0";
+         });
+       </script>
+     </div>
+   </div> 
+  </body>
+</html>

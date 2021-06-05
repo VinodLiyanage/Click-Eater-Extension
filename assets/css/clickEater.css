@@ -1,0 +1,39 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}
+
+.miniui-container{
+  position: absolute !important;
+  display: flex !important;
+  flex-direction: row !important; 
+  justify-content: center !important;
+  align-items: center !important;
+  width: fit-content !important;
+  z-index: 999999 !important;
+ 
+}
+
+.mainui-container{
+    position: absolute;
+    width:400px;
+    z-index: 9999999;
+}
+.observer-mainui-container {
+    position: absolute;
+    width:400px;
+    z-index: 9999999;
+}
+
+.show {
+    display: block;
+}
+.hide {
+    display: none;
+}

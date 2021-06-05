@@ -1,0 +1,39 @@
+{
+    "name": "Aylwin",
+    "description": "Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin Aylwin",
+    "version": "1.0.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Aylwin",
+        "default_icon": {   
+            "16":"/assets/images/logo.png",
+            "24":"/assets/images/logo.png",
+            "32":"/assets/images/logo.png",
+            "128":"/assets/images/logo.png"                    
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "css":["/assets/css/clickEater.css", "/assets/css/bootstrap.min.css"],
+            "run_at": "document_idle",
+            "js": [
+                "/assets/js/contentScripts/appManager.js"
+            ]
+        }
+    ],
+    "permissions":[
+        "tabs",
+        "storage"
+    ],
+    "icons": {                    
+        "16":"/assets/images/logo.png",
+        "24":"/assets/images/logo.png",
+        "32":"/assets/images/logo.png",
+        "128":"/assets/images/logo.png"
+      }
+}
