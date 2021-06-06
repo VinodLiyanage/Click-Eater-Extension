@@ -13,7 +13,6 @@ class Observer {
     this.xpath = null;
     this.callbacksuccess = () => {};
     this.counter = 0;
-    this.prevFindNode = null;
   }
   init(xpath, callbacksuccess, observeCount) {
     this.xpath = xpath;
@@ -21,68 +20,96 @@ class Observer {
     this.callbacksuccess = callbacksuccess;
 
     this.config = { attributes: true, childList: true, subtree: true };
-    this.observer = new MutationObserver((mutationsList, observer) => {
-      if (this.observeCount === null || typeof this.observeCount !== "number") {
-        this.callback(mutationsList, observer);
-      } else {
-        if (this.counter < this.observeCount) {
-          this.callback(mutationsList, observer);
+    this.staticElementObserver = new MutationObserver(
+      (mutationsList, observer) => {
+        if (this.countValidator()) {
+          this.staticElementObserverCallback(mutationsList, observer);
         } else {
           observer.disconnect();
           this.callbacksuccess();
-          this.counter = 0;
-          return null;
         }
       }
-    });
+    );
+
+    this.dynamicElementObserver = new MutationObserver(
+      (mutationsList, observer) => {
+        if (this.countValidator()) {
+          this.dynamicElementObserverCallback(mutationsList, observer);
+        } else {
+          observer.disconnect();
+          this.callbacksuccess();
+        }
+      }
+    );
   }
-  observe() {
-    try {
-      this.observer.observe(document.body, this.config);
-    } catch (e) {
-      console.error(e);
+  countValidator() {
+    if (this.observeCount === null || typeof this.observeCount !== "number") {
+      return true;
+    }
+    if (this.observeCount === 0) return false;
+
+    if (this.counter < this.observeCount) {
+      return true;
+    } else {
+      this.counter = 0;
+      return false;
     }
   }
-  disconnect() {
-    try {
-      this.observer.disconnect();
-    } catch (e) {
-      console.error(e);
-    }
-  }
-  getElement(xpath) {
+  getElement(contextNode = document) {
     return document.evaluate(
-      xpath,
-      document,
+      this.xpath,
+      contextNode,
       null,
       XPathResult.FIRST_ORDERED_NODE_TYPE,
       null
     ).singleNodeValue;
   }
   click(element) {
-    //console.log(element, this.counter)
     if (element && element instanceof HTMLElement) {
       element.click();
       this.counter++;
     }
   }
-  callback(mutationsList, observer) {
-    if (!(mutationsList && mutationsList.length)) return;
+  observe() {
+    this.disconnect();
 
-    const findNode = this.getElement(this.xpath);
-    if (!(findNode instanceof HTMLElement)) return null;
-
-    //*this will prevent observer from clicking same element twice
-    //? experimental
-    if (this.prevFindNode === findNode) return null;
-
+    const element = this.getElement();
+    if (element) {
+      this.staticElementObserver.observe(element, this.config);
+    } else {
+      this.dynamicElementObserver.observe(document.body, this.config);
+    }
+  }
+  disconnect() {
+    try {
+      this.staticElementObserver.disconnect();
+      this.dynamicElementObserver.disconnect();
+    } finally {
+      null;
+    }
+  }
+  staticElementObserverCallback(mutationsList, observer) {
+    log("static elment observer called");
+    const element = this.getElement();
     observer.disconnect();
+    this.click(element);
+    observer.observe(element, this.config);
+  }
+  dynamicElementObserverCallback(mutationsList, observer) {
+    log("dynamic elment observer called");
 
-    this.click(findNode);
-    observer.observe(document.body, this.config);
+    for (let mutation of mutationsList) {
+      if (mutation.addedNodes.length && mutation.target) {
+        const findElem = this.getElement(mutation.target);
 
-    //*this will prevent from clicking same element twice
-    this.prevFindNode = findNode;
+        if (findElem) {
+          observer.disconnect();
+          this.click(findElem);
+          observer.observe(document.body, this.config);
+          return;
+        }
+      } else continue;
+    }
   }
 }
 
@@ -415,7 +442,7 @@ class MainUi {
   }
   create() {
     const htmlText = `<div id="mainui-container-wrapper-${this.id}" class="mainui-container-wrapper container container-fluid border rounded">
-    <div class="xpath-container mb-3">
+    <div class="xpath-container mt-1 mb-3">
       <div class="row mb-3">
         <label for="inputXpath-${this.id}" class="col-sm-2 col-form-label">Xpath</label>
         <div class="col-sm-10">
