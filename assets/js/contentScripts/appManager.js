@@ -3,7 +3,7 @@
   https://github.com/VinodLiyanage/Click-Eater-Extension
   -------------------------------- (C) ---------------------------------
                            Author: Vinod Liyanage
-                         <vinodsliyanage@gmail.com>
+                       
 ************************************************************************/
 
 const log = console.log;
