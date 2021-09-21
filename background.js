@@ -3,7 +3,7 @@
   https://github.com/VinodLiyanage/click-eater-chrome-extension
   -------------------------------- (C) ---------------------------------
                            Author: Vinod Liyanage
-                         <vinodsliyanage@gmail.com>
+                    
 ************************************************************************/
 
 
